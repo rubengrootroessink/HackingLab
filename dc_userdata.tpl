@@ -59,6 +59,10 @@ net localgroup "${ud_user_lsa_secret_group}" ${ud_user_lsa_secret_username} /add
 # Creates a Domain Administrator which has an LSASS session somewhere.
 net user ${ud_user_lsass_da_username} ${ud_user_lsass_da_pass} /add /Y
 
+# Attack Path 5
+# Creates a Domain Administrator which is used to roll out CA server.
+net user ${ud_user_cert_server_da_username} ${ud_user_cert_server_da_pass} /add /Y
+
 # Turn off the annoying Microsoft Edge questions at first run.
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Force
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1 -Type DWord
@@ -110,6 +114,7 @@ echo "    Start-Sleep -Seconds 300" >> $installScriptPath
 echo "    net group `"Domain Admins`" ${ud_user_ldap_empty_pass_username} /add /Y" >> $installScriptPath
 echo "    net group `"Domain Admins`" ${ud_user_kerberos_ticket_username} /add /Y" >> $installScriptPath
 echo "    net group `"Domain Admins`" ${ud_user_lsass_da_username} /add /Y" >> $installScriptPath
+echo "    net group `"Domain Admins`" ${ud_user_cert_server_da_username} /add /Y" >> $installScriptPath
 
 # Setting the password of a certain user to be empty (blank). Requires -PasswordNotRequired flag to be set
 echo "    Set-ADDefaultDomainPasswordPolicy -ComplexityEnabled `$false -Identity ${ud_domain}" >> $installScriptPath
@@ -207,6 +212,9 @@ echo "" >> $installScriptPath
 # Delete Rubeus
 echo "rm ${ud_download_location}\Rubeus.exe" >> $installScriptPath
 echo "" >> $installScriptPath
+
+# Ensures KDC requests a CA at RootCA (every 5 minutes)
+echo "schtasks /create /tn `"CertutilPulse`" /tr `"certutil -pulse`" /ru SYSTEM /sc minute /mo 5 /f" >> $installScriptPath
 
 # Unregister enrollment script
 echo "Unregister-ScheduledTask -TaskName `"RollOut`" -Confirm:`$false" >> $installScriptPath

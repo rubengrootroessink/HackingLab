@@ -600,6 +600,38 @@ variable "ms_lsass_da_install_script_tpl" {
   default = "./ms_lsass_da_userdata.tpl"
 }
 
+### Attack Path 5 ###
+### Server with DA in LSASS ###
+variable "ms_ca_hostname" {
+  description = "Hostname"
+  type = string
+  default = "CA01"
+}
+
+variable "ms_ca_ip" {
+  description = "IP address"
+  type = string
+  default = "192.168.0.51"
+}
+
+variable "ms_ca_local_admin_pass" {
+  description = "(Local) admin password"
+  type = string
+  default = "F7yrvMq3pgB8cKAQYS"
+}
+
+variable "ms_ca_install_script_tpl" {
+  description = "User data installation script"
+  type = string
+  default = "./ms_ca_userdata.tpl"
+}
+
+variable "ms_ca_sched_task_name" {
+  description = "Name of ScheduledJob that runs recurring SMB request."
+  type = string
+  default = "CARollOut"
+}
+
 ### Domain Users ###
 variable "user_domain_join_username" {
   description = "Username of the account to join machines to the domain. Disabled after usage."
@@ -785,4 +817,16 @@ variable "user_lsass_da_pass" {
   description = "Password of Domain Admin which has an LSASS session on a certain machine."
   type = string
   default = "2r09Y6lfCDGko9tddt"
+}
+
+variable "user_cert_server_da_username" {
+  description = "Domain Admin used to roll-out Certificate Server."
+  type = string
+  default = "adm_ca"
+}
+
+variable "user_cert_server_da_pass" {
+  description = "Password of Domain Admin used to roll-out Certificate Server."
+  type = string
+  default = "ziJ86a8HvTxlSXx4d9"
 }

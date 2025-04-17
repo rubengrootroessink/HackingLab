@@ -72,6 +72,10 @@ data "template_file" "dc_init" {
     
     ud_user_lsass_da_username = var.user_lsass_da_username
     ud_user_lsass_da_pass = var.user_lsass_da_pass
+
+    # Attack Path 5
+    ud_user_cert_server_da_username = var.user_cert_server_da_username
+    ud_user_cert_server_da_pass = var.user_cert_server_da_pass
   }
 }
 
